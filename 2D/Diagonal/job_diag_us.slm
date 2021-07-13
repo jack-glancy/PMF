@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# set name of job
+#SBATCH --ntasks-per-node=16
+#SBATCH --job-name=min
+#SBATCH --output=min.out
+#SBATCH --error=min.err
+
+# run the application
+# constraint increment size in picometers
+inc1=10
+inc2=-15
+# initial constraint length in picometers
+init1=148
+init2=390
+# edit for however many windows
+for i in {0..16}
+do
+mkdir dir_$i
+cd dir_$i
+cp ../* .
+# first window uses pre-existing MD generated coordinates
+if [ $i = 0 ]
+then
+mpirun -np 16 sander.MPI -O -i md2ps.i -o md2ps.log -p hpnp_NOH.top -c 03_Prod.ncrst -ref 03_Prod.ncrst -x md2ps.nc -r md2ps_$i.rst7
+else
+j=$(($i - 1))
+# copy restart from previous window
+cp ../dir_$j/md2ps_$j.rst7 .
+# constraint value for ith window
+mid1=`printf %.2f "$(($init1+$inc1*$i))e-2"`
+mid2=`printf %.2f "$(($init2+$inc2*$i))e-2"`
+# Upper and lower bounds
+ub1=`printf %.2f "$(($init1+$inc1*$i+5*10))e-2"`
+lb1=`printf %.2f "$(($init1+$inc1*$i-5*10))e-2"`
+
+ub2=`printf %.2f "$(($init2+$inc2*$i+5*10))e-2"`
+lb2=`printf %.2f "$(($init2+$inc2*$i-5*10))e-2"`
+
+# edit the lines in the rc1.RST file to fit the window
+sed -i "s/  r1=0.98/  r1=$lb1/" rc1.RST
+sed -i "s/  r2=1.48/  r2=$mid1/" rc1.RST
+sed -i "s/  r3=1.48/  r3=$mid1/" rc1.RST
+sed -i "s/  r4=1.98/  r4=$ub1/" rc1.RST
+
+sed -i "s/  r1=3.40/  r1=$lb2/" rc1.RST
+sed -i "s/  r2=3.90/  r2=$mid2/" rc1.RST
+sed -i "s/  r3=3.90/  r3=$mid2/" rc1.RST
+sed -i "s/  r4=4.40/  r4=$ub2/" rc1.RST
+
+mpirun -np 16 sander.MPI -O -i md2ps.i -o md2ps.log -p hpnp_NOH.top -c md2ps_$j.rst7 -ref md2ps_$j.rst7 -x md2ps.nc -r md2ps_$i.rst7
+fi
+cd ..
+done

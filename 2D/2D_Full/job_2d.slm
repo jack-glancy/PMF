@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# set name of job
+#SBATCH --ntasks-per-node=16
+#SBATCH --job-name=2d
+#SBATCH --output=2d.out
+#SBATCH --error=2d.err
+
+./run_window_good.sh < num
