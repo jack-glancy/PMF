@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # set name of job
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=16
 #SBATCH --job-name=2d
 #SBATCH --output=2d.out
