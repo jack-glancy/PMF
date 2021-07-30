@@ -1,4 +1,5 @@
 # PMF
+## Written by Jack Glancy
 ****
 ## Code for running QM/MM free energy profiles and surfaces with the AmberTools21 package through Umbrella Sampling
 
