@@ -1,3 +1,4 @@
+# written by Jack Glancy
 import matplotlib.pyplot as plt
 import matplotlib
 from stringcolor import *
