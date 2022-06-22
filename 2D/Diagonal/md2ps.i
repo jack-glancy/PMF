@@ -3,7 +3,7 @@
  imin=0,                        ! Not a minimisation run
  irest=0,                       ! Restart simulation
  nscm=1000,                     ! Reset COM every 1000 steps
- nstlim=3000, dt=0.001,         ! Run MD for 3 ps with a timestep of 1 fs
+ nstlim=30000, dt=0.001,        ! Run MD for 30 ps with a timestep of 1 fs
  ntpr=50, ntwx=50,              ! Write the trajectory every 10 ps and the energies every 10 ps
  ioutfm=1,                      ! Use Binary NetCDF trajectory format (better)
  ntxo=2,                        ! NetCDF file
